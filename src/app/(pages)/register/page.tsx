@@ -6,11 +6,9 @@ import Link from 'next/link';
 import { Inter } from 'next/font/google'
 import StaticAuthContent from '../../_components/StaticAuthContent/StaticAuthContent';
 import { useFormik } from 'formik';
-import { signIn } from 'next-auth/react';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { log } from 'console';
 
 
 const inter = Inter({ subsets: ['latin'] })

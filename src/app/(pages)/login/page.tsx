@@ -1,5 +1,5 @@
 'use client'
-import React, { FormEvent, useState } from 'react'
+import React, { useState } from 'react'
 import StaticAuthContent from '@/app/_components/StaticAuthContent/StaticAuthContent';
 import Link from 'next/link';
 import { Inter } from 'next/font/google'
