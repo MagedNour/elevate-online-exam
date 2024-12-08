@@ -29,6 +29,7 @@ export default function Login() {
     const SubmitForm = async (values: { email: string, password: string }) => {
         setApiError(null)
         setIsLoading(true)
+        
         const res = await signIn("credentials", { email: values.email, password: values.password, callbackUrl: "/", redirect: false });
         if (res?.error) {
             console.log(res.error);
@@ -56,6 +57,7 @@ export default function Login() {
             <div className="col-span-1">
                 <StaticAuthContent />
             </div>
+            
             <div className={`col-span-1 px-10 py-10 ${inter.className}`}>
                 <div className="links flex justify-end gap-6 mb-10 lg:mb-0">
                     <select name="Lang" id="lang">
@@ -72,6 +74,8 @@ export default function Login() {
 
                             {/* Inputs Group*/}
                             <div className="inputs-group flex flex-col gap-6">
+
+                                {/* Email Input */}
                                 <input
                                     name='email'
                                     style={{ boxShadow: '0px 10.09px 20.18px 0px #4461F20D' }}
@@ -88,6 +92,8 @@ export default function Login() {
                                 {formik.touched.email && formik.errors.email &&
                                     <p className='text-red-500 mt-1'>{formik.errors.email}</p>
                                 }
+
+                                 {/* Password Input */}
                                 <div className='relative'>
                                     <input
                                         name="password"
@@ -138,8 +144,6 @@ export default function Login() {
                     </div>
                 </div>
             </div>
-
-
         </div>
     )
 }

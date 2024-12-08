@@ -9,6 +9,8 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import VerifyCode from '@/app/_components/verifyCode/VerifyCode';
+import ResetPassword from '@/app/_components/resetPassword/ResetPassword';
 
 
 const inter = Inter({ subsets: ['latin'] })
@@ -26,6 +28,7 @@ export default function ForgotYourPassword() {
     const [successMessage, setSuccessMessage] = useState<string | null>()
     const [apiError, setApiError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false)
+    const [currentPage, setCurrentPage] = useState("forgot")
 
     const router = useRouter();
 
@@ -43,7 +46,7 @@ export default function ForgotYourPassword() {
         await axios.post("https://exam.elevateegy.com/api/v1/auth/forgotPassword", values).then(({ data }) => {
             setSuccessMessage(data.message)
             setIsLoading(false)
-            router.push('/verifyCode')
+            setCurrentPage("verify")
 
 
         }).catch((err) => {
@@ -61,13 +64,11 @@ export default function ForgotYourPassword() {
         validationSchema,
         onSubmit: SubmitForm
     })
-    return (
-        <>
-            <div className="grid lg:grid-cols-2 h-screen">
-                <div className="col-span-1">
-                    <StaticAuthContent />
-                </div>
 
+    const renderedContent = () => {
+        if (currentPage === "forgot") {
+            return (
+                /* Forgot Password Form */
                 <div className={`col-span-1 px-10 py-10 ${inter.className}`}>
                     <div className="links flex justify-end gap-6 mb-10 lg:mb-0">
                         <select name="Lang" id="lang">
@@ -79,6 +80,8 @@ export default function ForgotYourPassword() {
                     </div>
                     <div className="container flex justify-center items-center h-full">
                         <div className="form gap-8 w-full lg:w-[65%]">
+
+
                             <form onSubmit={formik.handleSubmit} className='flex flex-col gap-6'>
                                 <h3 className='text-2xl font-bold'>Forgot your password?</h3>
 
@@ -92,7 +95,7 @@ export default function ForgotYourPassword() {
                                         style={{ boxShadow: '0px 10.09px 20.18px 0px #4461F20D' }}
                                         type="email"
                                         className={`h-[55px] p-2 rounded-[9.91px] border-2 w-full 
-                                        ${formik.touched.email &&
+                                                ${formik.touched.email &&
                                                 formik.errors.email ?
                                                 "border-red-500" : "border-[#F9F9F9]"}`}
                                         placeholder='Enter Email'
@@ -141,8 +144,25 @@ export default function ForgotYourPassword() {
                             </div>
                         </div>
                     </div>
+                </div>)
+        } else if (currentPage === "verify") {
+            return <VerifyCode setCurrentPage={setCurrentPage} />
+        } else if (currentPage === "reset") {
+            return <ResetPassword />
+        }
+    }
+    return (
+        <>
+            <div className="grid lg:grid-cols-2 h-screen">
+
+                {/* Static Content */}
+                <div className="col-span-1">
+                    <StaticAuthContent />
                 </div>
 
+
+                {/* Dynamic Content */}
+                {renderedContent()}
 
             </div>
         </>

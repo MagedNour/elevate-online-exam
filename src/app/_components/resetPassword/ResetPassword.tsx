@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image';
 import Link from 'next/link';
 import { Inter } from 'next/font/google'
-import StaticAuthContent from '../../_components/StaticAuthContent/StaticAuthContent';
+import StaticAuthContent from '../StaticAuthContent/StaticAuthContent';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
@@ -94,11 +94,6 @@ export default function ResetPassword() {
     })
     return (
         <>
-            <div className="grid lg:grid-cols-2 h-screen">
-                <div className="col-span-1">
-                    <StaticAuthContent />
-                </div>
-
                 <div className={`col-span-1 px-10 py-10 ${inter.className}`}>
                     <div className="links flex justify-end gap-6 mb-10 lg:mb-0">
                         <select name="Lang" id="lang">
@@ -196,9 +191,6 @@ export default function ResetPassword() {
                         </div>
                     </div>
                 </div>
-
-
-            </div>
         </>
     )
 }
