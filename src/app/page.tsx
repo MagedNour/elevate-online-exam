@@ -1,19 +1,14 @@
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
-import { authOptions } from "@/lib/auth";
-import NavBar from "./_components/NavBar/NavBar";
+import SideNavLayOut from "./_components/SideNavLayOut/SideNavLayOut";
+import Quizzes from "./_components/Quizzes/Quizzes";
 
-export default async function Home() {
-  const session = await getServerSession(authOptions)
-  console.log("session", session);
+
+export default function Home() {
   
-  if(!session)
-    redirect('login')
+
   return (
-    <div>
-      <NavBar/>
-     Home Page
-     <h1 className="bg-red-500"> Hello</h1>
-    </div>
+    <SideNavLayOut>
+      <Quizzes/>
+      
+    </SideNavLayOut>
   );
 }

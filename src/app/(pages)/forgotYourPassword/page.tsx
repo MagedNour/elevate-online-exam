@@ -160,7 +160,6 @@ export default function ForgotYourPassword() {
                     <StaticAuthContent />
                 </div>
 
-
                 {/* Dynamic Content */}
                 {renderedContent()}
 

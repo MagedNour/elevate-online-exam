@@ -11,8 +11,14 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        primary: "#4461F2"
       },
+      fontFamily: {
+        poppins: ['var(--font-poppins)', 'sans-serif'],
+      }
     },
   },
-  plugins: [],
+  plugins: [
+    
+  ],
 } satisfies Config;

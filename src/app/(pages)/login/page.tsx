@@ -7,14 +7,20 @@ import Image from 'next/image';
 import { signIn } from 'next-auth/react';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
+import { useRouter, useSearchParams } from 'next/navigation';
+
 
 
 
 const inter = Inter({ subsets: ['latin'] })
+const x: number = 5;
 
 export default function Login() {
     const [apiError, setApiError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false)
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const redirect = searchParams?.get('redirect') || '/';
 
     const validationSchema = Yup.object({
         email: Yup.string().required("Email is required").email("Please Enter a valid Email"),
@@ -29,18 +35,18 @@ export default function Login() {
     const SubmitForm = async (values: { email: string, password: string }) => {
         setApiError(null)
         setIsLoading(true)
-        
+
         const res = await signIn("credentials", { email: values.email, password: values.password, callbackUrl: "/", redirect: false });
         if (res?.error) {
             console.log(res.error);
 
             setApiError(res.error);
             setIsLoading(false)
-        }else if (res?.ok) {
-            // Success case: Manually redirect to the home page
-            window.location.href = res.url || "/";
-        }
+        } else if (res?.ok) {
+            setIsLoading(false)
+            router.push(redirect);
 
+        }
     }
 
     const formik = useFormik({
@@ -57,7 +63,7 @@ export default function Login() {
             <div className="col-span-1">
                 <StaticAuthContent />
             </div>
-            
+
             <div className={`col-span-1 px-10 py-10 ${inter.className}`}>
                 <div className="links flex justify-end gap-6 mb-10 lg:mb-0">
                     <select name="Lang" id="lang">
@@ -93,7 +99,7 @@ export default function Login() {
                                     <p className='text-red-500 mt-1'>{formik.errors.email}</p>
                                 }
 
-                                 {/* Password Input */}
+                                {/* Password Input */}
                                 <div className='relative'>
                                     <input
                                         name="password"

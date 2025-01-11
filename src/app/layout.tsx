@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "@fortawesome/fontawesome-free/css/all.min.css"
 import "./globals.css";
-
+import AuthProvider from "@/context/AuthProvider";
 
 
 export const metadata: Metadata = {
@@ -17,8 +17,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
+
       </body>
     </html>
   );
