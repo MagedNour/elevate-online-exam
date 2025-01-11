@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import Image from 'next/image';
 import { useRouter } from "next/navigation";
 import { Poppins } from 'next/font/google';
-import { useSession } from "next-auth/react"; // Import useSession hook
-import { JSON_HEADER } from "../../../lib/types/constants/api.constant";
 
 
 
@@ -29,34 +27,34 @@ interface subjectInterface {
 export default function Quizzes() {
 
   const router = useRouter();
-  const { data: session, status } = useSession(); // Get session and status
   
   const [subjects, setSubjects] = useState<subjectInterface[]>([])
   
   
 
   const getSubjects = async () => {
-    
-    const res = await fetch("https://exam.elevateegy.com/api/v1/subjects", {
-      method: "GET",
-      headers:{
-        ...JSON_HEADER,
-        token: session?.token || ""
+    try {
+      const res = await fetch("/api/subjects", {
+        method: "GET",
+        headers: {
+          
+        },
+      });
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
       }
-    });
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
+
+      const data = await res.json();
+      setSubjects(data.data.subjects);
+
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
     }
-    const data = await res.json();
-    setSubjects(data.subjects);
-  }
+  };
 
   useEffect(() => {
-    // Ensure the session is loaded and the token exists
-    if (status === "authenticated" && session?.token) {
       getSubjects()
-    }
-  }, [session, status]);
+  }, []);
 
 
   return (

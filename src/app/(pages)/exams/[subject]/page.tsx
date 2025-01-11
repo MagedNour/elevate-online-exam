@@ -2,10 +2,8 @@
 import SideNavLayOut from '@/app/_components/SideNavLayOut/SideNavLayOut'
 import React, { useEffect, useState } from 'react'
 import { Inter } from 'next/font/google'
-import axios from 'axios';
 import ExamComponent from '@/app/_components/ExamComponent/ExamComponent';
 import { useSession } from 'next-auth/react';
-import { JSON_HEADER } from '../../../../lib/types/constants/api.constant';
 import { ExamInterface, SubjectInterface, subjectWithExamsInterface } from '../../../Interfaces/Interfaces';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -24,49 +22,50 @@ export default function Exam({ params }: PageProps) {
   const [modalOpened, setModalOpened] = useState(false)
   const [examStarted, setExamStarted] = useState(false)
   const [currentExamDuration, setCurrentExamDuration] = useState(0)
-  const { data: session, status } = useSession();
 
 
 
   // Fetch subjects
   const getSubjects = async () => {
-    const res = await fetch("https://exam.elevateegy.com/api/v1/subjects", {
-      method: "GET",
-      headers: {
-        ...JSON_HEADER,
-        token: session?.token || ""
+    try {
+      const res = await fetch("/api/subjects", {
+        method: "GET",
+        headers: {
+
+        },
+      });
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
       }
-    });
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
+
+      const data = await res.json();
+      setSubjects(data.data.subjects);
+
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
     }
-    const data = await res.json();
-    setSubjects(data.subjects);
   };
+
 
   // Fetch exams
   const getExams = async () => {
+    const subjectId = params?.subject || "all";
     try {
-      const subjectId = params?.subject;
+      const res = await fetch(`/api/exams?subject=${subjectId}`, {
+        method: "GET",
+        headers: {
 
-      if (subjectId === "all") {
-        const res = await axios.get("https://exam.elevateegy.com/api/v1/exams", {
-          headers: { token: session?.token || "" },
-        });
-        console.log("exams", res.data.exams);
-
-        setExams(res.data.exams);
-      } else {
-        const res = await axios.get(`https://exam.elevateegy.com/api/v1/exams?subject=${subjectId}`, {
-          headers: { token: session?.token || "" },
-        });
-        console.log("exams", res.data.exams);
-
-        setExams(res.data.exams);
+        },
+      });
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
       }
 
+      const data = await res.json();
+      setExams(data.data.exams);
+
     } catch (error) {
-      console.error("Error fetching exams:", error);
+      console.error("Error fetching subjects:", error);
     }
   };
 
@@ -80,25 +79,33 @@ export default function Exam({ params }: PageProps) {
 
   // Fetch Questions
   const getQuestionsForExam = async (id: string) => {
+
     try {
+      const res = await fetch(`/api/questions?exam=${id}`, {
+        method: "GET",
+        headers: {
 
-      const res = await axios.get(`https://exam.elevateegy.com/api/v1/questions?exam=${id}`, {
-        headers: { token: session?.token || "" },
+        },
       });
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
 
-      console.log("questions", res.data.questions);
-      setQuestions(res.data.questions);
+      const data = await res.json();
 
+      setQuestions(data.data.questions);
 
     } catch (error) {
       console.error("Error fetching subjects:", error);
     }
+
+
   }
 
 
   // Organize data after subjects and exams are loaded
   useEffect(() => {
-    if (subjects?.length > 0 && exams.length > 0) {
+    if (subjects?.length > 0 && exams?.length > 0) {
 
       // Organize data to get Array of subjects with their exams
       const organizedData: subjectWithExamsInterface[] = subjects?.map((subject) => ({
@@ -112,11 +119,9 @@ export default function Exam({ params }: PageProps) {
 
   // Fetch subjects and exams after user is authenticated
   useEffect(() => {
-    if (status === "authenticated" && session?.token) {
-      getSubjects();
-      getExams();
-    }
-  }, [session, status]);
+    getSubjects();
+    getExams();
+  }, []);
 
 
 

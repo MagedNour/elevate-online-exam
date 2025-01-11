@@ -31,7 +31,6 @@ declare module "next-auth" {
         phone: string;
         role: string;
         isVerified: boolean;
-        token: string; // To be removed from here in the future
     }
 }
 

@@ -75,7 +75,9 @@
 import { NextAuthOptions } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { JSON_HEADER } from './lib/types/constants/api.constant';
+import { cookies } from 'next/headers';
 import  GoogleProvider  from 'next-auth/providers/google';
+
 
 
 export const authOptions: NextAuthOptions = {
@@ -109,6 +111,8 @@ export const authOptions: NextAuthOptions = {
 
         if (payload.message === "success") {
           const successPayload = payload as SuccessfulResponse;
+          
+          (await cookies()).set("accessToken", successPayload.token, {httpOnly: true})
           return {
             ...successPayload.user,
             token: successPayload.token
@@ -145,7 +149,6 @@ export const authOptions: NextAuthOptions = {
       session.email = token.email;
       session.phone = token.phone;
       session.role = token.role;
-      session.token = token.token;
       return session;
     }
   }
