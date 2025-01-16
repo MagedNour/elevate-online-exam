@@ -1,10 +1,8 @@
 'use client'
-import SideNavLayOut from '@/app/_components/SideNavLayOut/SideNavLayOut'
 import React, { useEffect, useState } from 'react'
 import { Inter } from 'next/font/google'
 import ExamComponent from '@/app/_components/ExamComponent/ExamComponent';
-import { useSession } from 'next-auth/react';
-import { ExamInterface, SubjectInterface, subjectWithExamsInterface } from '../../../Interfaces/Interfaces';
+import { ExamInterface, SubjectInterface, subjectWithExamsInterface } from '../../../../Interfaces/Interfaces';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -126,7 +124,7 @@ export default function Exam({ params }: PageProps) {
 
 
   return (
-    <SideNavLayOut>
+    <div>
       <div className={`w-10/12 mx-auto mt-20 px-5 py-5 ${inter.className}`}>
         {subjectsWithExams?.map(({ subjectName, exams }) => (
 
@@ -186,6 +184,8 @@ export default function Exam({ params }: PageProps) {
             </div>}
         </div>
       </div>}
-    </SideNavLayOut>
+
+
+    </div>
   );
 }

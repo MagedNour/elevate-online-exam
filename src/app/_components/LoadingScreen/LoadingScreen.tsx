@@ -1,9 +1,8 @@
 import React from 'react'
-import SideNavLayOut from '../SideNavLayOut/SideNavLayOut'
 
 export default function LoadingScreen() {
     return (
-        <SideNavLayOut>
+        
             <div className='flex justify-center items-center w-full h-screen'>
 
 
@@ -30,7 +29,7 @@ export default function LoadingScreen() {
 
             </div>
 
-        </SideNavLayOut>
+      
 
     )
 }
