@@ -3,58 +3,21 @@ import React, { useEffect, useState } from 'react'
 import { Inter } from 'next/font/google'
 import ExamComponent from '@/app/_components/ExamComponent/ExamComponent';
 import { ExamInterface, SubjectInterface, subjectWithExamsInterface } from '../../../../Interfaces/Interfaces';
+import { use } from 'react'
 
 const inter = Inter({ subsets: ['latin'] });
 
 
 
 type PageProps = {
-  params: { subject: string }
-}
-
-export default function Exam({ params }: PageProps) {
-  const [exams, setExams] = useState<ExamInterface[]>([]);
-  const [subjects, setSubjects] = useState<SubjectInterface[]>([]);
-  const [subjectsWithExams, setSubjectsWithExams] = useState<subjectWithExamsInterface[]>([]);
-  const [questions, setQuestions] = useState([])
-  const [modalOpened, setModalOpened] = useState(false)
-  const [examStarted, setExamStarted] = useState(false)
-  const [currentExamDuration, setCurrentExamDuration] = useState(0)
-
-
-
-  // Fetch subjects
-  const getSubjects = async () => {
-    try {
-      const res = await fetch("/api/subjects", {
-        method: "GET",
-        headers: {
-
-        },
-      });
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-
-      const data = await res.json();
-      setSubjects(data.data.subjects);
-
-    } catch (error) {
-      console.error("Error fetching subjects:", error);
-    }
-  };
-
+  params: Promise<{ subject: string }>;
+};
 
   // Fetch exams
-  const getExams = async () => {
-    const subjectId = params?.subject || "all";
+  const getExams = async (subject: string, setExams: React.Dispatch<React.SetStateAction<ExamInterface[]>>) => {
+   
     try {
-      const res = await fetch(`/api/exams?subject=${subjectId}`, {
-        method: "GET",
-        headers: {
-
-        },
-      });
+      const res = await fetch(`/api/exams?subject=${subject}`);
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
@@ -66,6 +29,43 @@ export default function Exam({ params }: PageProps) {
       console.error("Error fetching subjects:", error);
     }
   };
+
+    // Fetch subjects
+    const getSubjects = async (setSubjects: React.Dispatch<React.SetStateAction<SubjectInterface[]>>) => {
+      try {
+        const res = await fetch("/api/subjects", {
+          method: "GET",
+          headers: {
+  
+          },
+        });
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+  
+        const data = await res.json();
+        setSubjects(data.data.subjects);
+  
+      } catch (error) {
+        console.error("Error fetching subjects:", error);
+      }
+    };
+
+
+export default function Exam({ params }: PageProps) {
+  const [exams, setExams] = useState<ExamInterface[]>([]);
+  const [subjects, setSubjects] = useState<SubjectInterface[]>([]);
+  const [subjectsWithExams, setSubjectsWithExams] = useState<subjectWithExamsInterface[]>([]);
+  const [questions, setQuestions] = useState([])
+  const [modalOpened, setModalOpened] = useState(false)
+  const [examStarted, setExamStarted] = useState(false)
+  const [currentExamDuration, setCurrentExamDuration] = useState(0)
+
+
+  const readyParams = use(params)
+  const subjectId = readyParams?.subject || "all";
+
+
 
 
   // Open Exam Modal
@@ -115,11 +115,11 @@ export default function Exam({ params }: PageProps) {
     }
   }, [subjects, exams]);
 
-  // Fetch subjects and exams after user is authenticated
   useEffect(() => {
-    getSubjects();
-    getExams();
-  }, []);
+    getSubjects(setSubjects);
+    getExams(subjectId, setExams);
+  }, [subjectId]);
+  
 
 
 

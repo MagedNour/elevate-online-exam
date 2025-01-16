@@ -7,7 +7,7 @@ export default function ResultsComponent({ incorrectAnswers }: { incorrectAnswer
 
             {incorrectAnswers.map((question, i) => {
                 return (
-                    <div className=" rounded-2xl bg-[#F9F9F9] p-3">
+                    <div key={i} className=" rounded-2xl bg-[#F9F9F9] p-3">
                         <h4 className="mb-4 font-light ">{question.question.question}</h4>
                         <ul className='text-[#535353] '>
                             {question.question.answers.map((answer, i) => {
